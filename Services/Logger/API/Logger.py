@@ -1,40 +1,35 @@
 import abc
+import sys
 
 
 class Logger:
     level = None
 
-    @staticmethod
     @abc.abstractmethod
-    def start():
+    def start(self):
+        pass
+
+    @abc.abstractmethod
+    def debug(self, message):
+        pass
+
+    @abc.abstractmethod
+    def info(self, message):
+        pass
+
+    @abc.abstractmethod
+    def warn(self, message):
+        pass
+
+    @abc.abstractmethod
+    def error(self, message):
+        pass
+
+    @abc.abstractmethod
+    def __log(self, level, message):
         pass
 
     @staticmethod
-    @abc.abstractmethod
-    def debug(message):
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
-    def info(message):
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
-    def warn(message):
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
-    def error(message):
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
     def __drop_app():
-        pass
-
-    @staticmethod
-    @abc.abstractmethod
-    def __log(message):
-        pass
+        # syslog.syslog("Can't write logs! Closing generator")
+        sys.exit()

@@ -1,33 +1,36 @@
-from Services.Logger.API import Logger
+from Services.Logger.API.Logger import Logger
+import datetime
 
 
 class TextFileLogger(Logger):
-    path = None
+    def __init__(self, path, level):
+        self.path = path
+        self.level = level
 
-    @staticmethod
-    def start():
-        pass
+    def start(self):
+        self.__log("START", "Application started")
 
-    @staticmethod
-    def debug(message):
-        pass
+    def debug(self, message):
+        if self.level > 3:
+            self.__log("DEBUG", message)
 
-    @staticmethod
-    def info(message):
-        pass
+    def info(self, message):
+        if self.level > 2:
+            self.__log("INFO", message)
 
-    @staticmethod
-    def warn(message):
-        pass
+    def warn(self, message):
+        if self.level > 1:
+            self.__log("WARN", message)
 
-    @staticmethod
-    def error(message):
-        pass
+    def error(self, message):
+        if self.level > 0:
+            self.__log("ERROR", message)
 
-    @staticmethod
-    def __drop_app():
-        pass
-
-    @staticmethod
-    def __log(message):
-        pass
+    def __log(self, level, message):
+        try:
+            with open(self.path, 'a') as out:
+                out.write("(At time: " +
+                          datetime.datetime.today().strftime(
+                              "%Y-%m-%d %H:%M:%S") + ") [" + level + "]: " + message + "\n")
+        except OSError:
+            TextFileLogger.__drop_app()
