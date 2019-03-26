@@ -1,4 +1,5 @@
 from Services.Logger.Implementation.TextFileLogger import TextFileLogger
+from Services.Logger.Implementation.Logging import Logging
 
 
 class MainApp:
@@ -7,7 +8,7 @@ class MainApp:
         self.config = None
 
     def prep(self):
-        pass
+        Logging.text_file_logger = TextFileLogger("LOG.txt", 4)
 
     def launch(self):
         pass
