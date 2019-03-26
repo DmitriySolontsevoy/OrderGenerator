@@ -1,4 +1,5 @@
 from Services.MessageBrokerService.API.ExchangeQueueBrokerService import ExchangeQueueBrokerService
+from Services.Logger.Implementation.Logging import Logging
 import pika
 
 

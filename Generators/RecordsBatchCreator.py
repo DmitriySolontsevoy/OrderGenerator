@@ -1,4 +1,4 @@
-from Services.Logger.Implementation.TextFileLogger import TextFileLogger
+from Services.Logger.Implementation.Logging import Logging
 
 
 class RecordsBatchCreator:

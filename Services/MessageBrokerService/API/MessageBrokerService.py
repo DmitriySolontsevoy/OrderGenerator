@@ -1,3 +1,4 @@
+from Services.Logger.Implementation.Logging import Logging
 import abc
 
 
@@ -9,4 +10,7 @@ class MessageBrokerService:
         pass
 
     def close_connection(self):
-        self.connection.close()
+        try:
+            self.connection.close
+        except Exception as err:
+            Logging.text_file_logger.error("Couldn't close connection to RMQ. Error: " + err.__str__())
