@@ -1,6 +1,7 @@
 # Order Generator
 A generator of order history with multiple services written in python
 It is tasked with generating data for order history, writing it to file, messaging and inserting to a database
+
 Python version: 3.7.2
 
 # Requirements
