@@ -1,8 +1,7 @@
-from Services.DatabaseService.API.DatabaseService import DatabaseService
 import abc
 
 
-class RelationDatabaseService(DatabaseService):
+class SQLDatabaseService:
     @abc.abstractmethod
     def execute(self, query):
         pass

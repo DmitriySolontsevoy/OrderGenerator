@@ -1,0 +1,74 @@
+{
+    "MYSQL_HOST" : "localhost",
+    "MYSQL_DB_SCHEMA": "generator",
+    "MYSQL_USER": "root",
+    "MYSQL_PASS": "root",
+
+    "LOG_FILE_WRITING_ERROR": 1,
+    "QUERY_FILE_WRITING_ERROR": 2,
+    "QUERY_FILE_READING_ERROR": 3,
+    "MEMORY_ERROR": 4,
+    "ZERO_BATCHES_ERROR": 5,
+
+    "WAIT_AFTER": 10,
+    "WAIT_BEFORE": -10,
+
+    "QUERY_FILE_PATH": "QUERIES.txt",
+    "LOG_FILE_PATH": "LOG.txt",
+    "REPORT_FILE_PATH": "REPORT.txt",
+
+    "LOG_LEVEL": 4,
+
+    "FIRST_ID_PART": 3333,
+    "SECOND_ID_PART": 2222,
+    "THIRD_ID_PART": 4444,
+    "FOURTH_ID_PART": 1111,
+
+    "FIRST_TAG": 4,
+    "SECOND_TAG": 8,
+    "THIRD_TAG": 7,
+    "FOURTH_TAG": 6,
+    "FIFTH_TAG": 11,
+
+    "FIRST_PAIR": 10,
+
+    "RED": 0.15,
+    "GREEN": 0.6,
+    "BLUE": 0.25,
+
+    "BATCH_SIZE": 200,
+    "BATCHES_AMOUNT": 10,
+
+    "FIRST_DESC": 164,
+
+    "BEGINNING_OF_TIME": 1540000000,
+
+    "ID_MULT": 3,
+    "ID_OFFSET": 2,
+    "ID_DIV": 4000,
+
+    "TAGS_MULT": 3,
+    "TAGS_OFFSET": 4,
+    "TAGS_DIV": 25,
+
+    "DESC_MULT": 5,
+    "DESC_OFFSET": 4,
+    "DESC_DIV": 999,
+
+    "CURPAIR_MULT": 1,
+    "CURPAIR_OFFSET": 2,
+    "CURPAIR_DIV": 15,
+
+    "INIT_MARGIN": 0.06,
+    "FILL_MARGIN": 0.05,
+
+    "INIT_LESS": 0.3,
+    "INIT_MORE": 0.7,
+    "FILL_LESS": 0.4,
+    "FILL_MORE": 0.6,
+
+    "PLACES_FOR_PRICE": 5,
+    "PLACES_FOR_VOLUME": 8,
+
+    "TAG_AMOUNT": 11
+}

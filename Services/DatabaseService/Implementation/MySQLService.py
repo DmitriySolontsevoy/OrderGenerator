@@ -1,24 +1,21 @@
-from Services.DatabaseService.API.RelationDatabaseService import RelationDatabaseService
+from Services.DatabaseService.API.SQLDatabaseService import SQLDatabaseService
 from Services.Logger.Implementation.Logging import Logging
 import mysql.connector
 
 
-class MySQLService(RelationDatabaseService):
-    def open_connection(self, host, schema, user, password):
-        result = True
-
-        try:
-            self.connection = mysql.connector.connect(host=host, database=schema, user=user, password=password)
-        except mysql.connector.Error as err:
-            result = False
-
-        return result
+class MySQLService(SQLDatabaseService):
+    def __init__(self, conn):
+        self.connection = conn
 
     def execute(self, query):
         cursor = self.connection.cursor()
 
         try:
             cursor.execute(query)
+        except mysql.connector.Error as err:
+            pass
+
+        try:
             self.connection.commit()
         except mysql.connector.Error as err:
             pass
@@ -31,6 +28,10 @@ class MySQLService(RelationDatabaseService):
         try:
             for item in queries:
                 cursor.execute(item)
+        except mysql.connector.Error as err:
+            pass
+
+        try:
             self.connection.commit()
         except mysql.connector.Error as err:
             pass
