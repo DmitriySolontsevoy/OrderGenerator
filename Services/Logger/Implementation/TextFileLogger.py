@@ -8,27 +8,27 @@ class TextFileLogger(Logger):
         self.level = level
 
     def start(self):
-        self.__log("START", "Application started")
+        self.__log("START", "Application started", "w")
 
     def debug(self, message):
         if self.level > 3:
-            self.__log("DEBUG", message)
+            self.__log("DEBUG", message, "a")
 
     def info(self, message):
         if self.level > 2:
-            self.__log("INFO", message)
+            self.__log("INFO", message, "a")
 
     def warn(self, message):
         if self.level > 1:
-            self.__log("WARN", message)
+            self.__log("WARN", message, "a")
 
     def error(self, message):
         if self.level > 0:
-            self.__log("ERROR", message)
+            self.__log("ERROR", message, "a")
 
-    def __log(self, level, message):
+    def __log(self, level, message, mode):
         try:
-            with open(self.path, 'a') as out:
+            with open(self.path, mode) as out:
                 out.write("(At time: " +
                           datetime.datetime.today().strftime(
                               "%Y-%m-%d %H:%M:%S") + ") [" + level + "]: " + message + "\n")

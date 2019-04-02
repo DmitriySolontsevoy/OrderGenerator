@@ -8,34 +8,34 @@ class TextFileService(FileService):
 
     # Try to open file by given path
     def open_file(self, path, mode):
-        Logging.text_file_logger.info("Attempting to open file: " + path)
+        Logging.info("Attempting to open file: " + path)
 
         try:
             return open(path, mode)
         except OSError:
-            Logging.text_file_logger.error("Couldn't open file. Closing!")
-            exit(self.config.QUERY_FILE_WRITING_ERROR)
+            Logging.error("Couldn't open file. Closing!")
+            exit(self.config["QUERY_FILE_WRITING_ERROR"])
 
     # Read a single line from file
     def read_line(self, file):
         try:
             return file.readline()
         except OSError:
-            pass
+            Logging.error("Couldn't read a line from file!")
 
     # Read every line from file
     def read_all(self, file):
         try:
             return file.readlines()
         except OSError:
-            pass
+            Logging.error("Couldn't read from file!")
 
     # Write a single line to file
     def write_line(self, file, line):
         try:
             file.write(line + '\n')
         except OSError:
-            pass
+            Logging.error("Couldn't write a line from file!")
 
     # Write list of lines to file
     def write_all(self, file, lines):
@@ -43,4 +43,4 @@ class TextFileService(FileService):
             for item in lines:
                 file.write(item + '\n')
         except OSError:
-            pass
+            Logging.error("Couldn't write to file!")

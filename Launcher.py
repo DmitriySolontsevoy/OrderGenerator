@@ -5,6 +5,6 @@ if __name__ == "__main__":
     inst = MainApp()
 
     inst.prep()
-    inst.launch()
+    inst.exec()
     inst.report()
     inst.free()

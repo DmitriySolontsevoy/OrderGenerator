@@ -5,35 +5,41 @@ import mysql.connector
 
 class MySQLService(SQLDatabaseService):
     def __init__(self, conn):
-        self.connection = conn
+        self.connector = conn
 
     def execute(self, query):
-        cursor = self.connection.cursor()
+        try:
+            cursor = self.connector.connection.cursor()
+        except AttributeError:
+            Logging.error("Couldn't work with connection! Is MySQL Server running?")
 
         try:
             cursor.execute(query)
         except mysql.connector.Error as err:
-            pass
+            Logging.error("Error while executing query")
 
         try:
-            self.connection.commit()
+            self.connector.connection.commit()
         except mysql.connector.Error as err:
-            pass
+            Logging.error("Error while committing changes")
 
         cursor.close()
 
     def execute_many(self, queries):
-        cursor = self.connection.cursor()
+        try:
+            cursor = self.connector.connection.cursor()
+        except AttributeError:
+            Logging.error("Couldn't work with connection! Is MySQL Server running?")
 
         try:
             for item in queries:
                 cursor.execute(item)
         except mysql.connector.Error as err:
-            pass
+            Logging.error("Error while executing queries")
 
         try:
-            self.connection.commit()
+            self.connector.connection.commit()
         except mysql.connector.Error as err:
-            pass
+            Logging.error("Error while committing changes")
 
         cursor.close()

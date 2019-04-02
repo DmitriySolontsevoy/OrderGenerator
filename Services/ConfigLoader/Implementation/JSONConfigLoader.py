@@ -12,4 +12,4 @@ class JSONConfigLoader(ConfigLoader):
             with open(self.path) as json_file:
                 return json.load(json_file)
         except OSError:
-            pass
+            Logging.error("Couldn't parse JSON file")

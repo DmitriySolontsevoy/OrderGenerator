@@ -12,12 +12,14 @@ class MySQLConnector(Connector):
             self.connection = mysql.connector.connect(host=host, database=schema, user=user, password=password)
             return True
         except mysql.connector.Error as err:
+            Logging.error("Couldn't establish MySQL connection!")
             return False
 
     def close_connection(self, **kwargs):
         try:
             self.connection.close()
         except mysql.connector.Error as err:
+            Logging.warn("Couldn't close MySQL connection!")
             pass
 
     def is_alive(self, **kwargs):

@@ -15,5 +15,5 @@ class ExchangeQueueBrokerService:
         pass
 
     @abc.abstractmethod
-    def bind(self, exchange, queue, routing_key):
+    def bind(self, exchange, queue):
         pass

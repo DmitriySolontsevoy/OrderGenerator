@@ -4,6 +4,12 @@
     "MYSQL_USER": "root",
     "MYSQL_PASS": "root",
 
+    "RABBITMQ_HOST": "localhost",
+    "RABBITMQ_PORT": 5672,
+    "RABBITMQ_VHOST": "/",
+    "RABBITMQ_USER": "guest",
+    "RABBITMQ_PASS": "guest",
+
     "LOG_FILE_WRITING_ERROR": 1,
     "QUERY_FILE_WRITING_ERROR": 2,
     "QUERY_FILE_READING_ERROR": 3,
@@ -13,7 +19,7 @@
     "WAIT_AFTER": 10,
     "WAIT_BEFORE": -10,
 
-    "QUERY_FILE_PATH": "QUERIES.txt",
+    "QUERY_FILE_PATH": "RECORDS.txt",
     "LOG_FILE_PATH": "LOG.txt",
     "REPORT_FILE_PATH": "REPORT.txt",
 
@@ -24,13 +30,15 @@
     "THIRD_ID_PART": 4444,
     "FOURTH_ID_PART": 1111,
 
+    "FIRST_PAIR": 10,
+
+    "FIRST_DESC": 164,
+
     "FIRST_TAG": 4,
     "SECOND_TAG": 8,
     "THIRD_TAG": 7,
     "FOURTH_TAG": 6,
     "FIFTH_TAG": 11,
-
-    "FIRST_PAIR": 10,
 
     "RED": 0.15,
     "GREEN": 0.6,
@@ -38,8 +46,6 @@
 
     "BATCH_SIZE": 200,
     "BATCHES_AMOUNT": 10,
-
-    "FIRST_DESC": 164,
 
     "BEGINNING_OF_TIME": 1540000000,
 
@@ -70,5 +76,11 @@
     "PLACES_FOR_PRICE": 5,
     "PLACES_FOR_VOLUME": 8,
 
-    "TAG_AMOUNT": 11
+    "TAG_AMOUNT": 11,
+
+    "TEXT_LOGGING": 1,
+    "TXT_LOG_LEVEL": 4,
+
+    "CONSOLE_LOGGING": 1,
+    "CONSOLE_LOG_LEVEL": 4
 }
