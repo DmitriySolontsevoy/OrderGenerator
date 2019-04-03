@@ -3,16 +3,9 @@ from Services.Logger.Implementation.Logging import Logging
 from ReportData.ReportData import ReportData
 
 
-class TextFileReporter(Reporter):
-    def __init__(self, path, file_service):
-        self.path = path
-        self.file_service = file_service
-        self.file = None
-
+class ConsoleReporter(Reporter):
     def report(self):
-        Logging.info("Attempting to open file for report writing: " + self.path)
-        self.file = self.file_service.open_file(self.path, "w")
-
+        Logging.info("Started console reporting")
         self.report_list(ReportData.generated_red, "Red zone generation")
         self.report_list(ReportData.generated_green, "Green zone generation")
         self.report_list(ReportData.generated_blue, "Blue zone generation")
@@ -40,7 +33,4 @@ class TextFileReporter(Reporter):
             minimum = min(list)
             maximum = max(list)
             average = s/amount
-            self.file_service.write_line(self.file, "{} (amount = {}):\nMin: {}\nMax: {}\nAvg: {}\n".format(flavor_text,
-                                                                                                       amount, minimum,
-                                                                                                       maximum,
-                                                                                                       average))
+            print("{} (amount = {}):\nMin: {}\n Max: {}\nAvg: {}\n".format(flavor_text, amount, minimum, maximum, average))

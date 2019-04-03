@@ -76,15 +76,17 @@ class ValueProcessor:
         Logging.info("Creating a unified tag string")
         tags_list = ""
 
-        if prev[0] is not None and prev[0] < self.config["TAG_AMOUNT"]:
+        length = len(ConstantCollections.TAGS_LIST)
+
+        if prev[0] is not None and prev[0] < length:
             tags_list += ConstantCollections.TAGS_LIST[prev[0]]
-        if prev[1] is not None and prev[1] < self.config["TAG_AMOUNT"]:
+        if prev[1] is not None and prev[1] < length:
             tags_list += " " + ConstantCollections.TAGS_LIST[prev[1]]
-        if prev[2] is not None and prev[2] < self.config["TAG_AMOUNT"]:
+        if prev[2] is not None and prev[2] < length:
             tags_list += " " + ConstantCollections.TAGS_LIST[prev[2]]
-        if prev[3] is not None and prev[3] < self.config["TAG_AMOUNT"]:
+        if prev[3] is not None and prev[3] < length:
             tags_list += " " + ConstantCollections.TAGS_LIST[prev[3]]
-        if prev[4] is not None and prev[4] < self.config["TAG_AMOUNT"]:
+        if prev[4] is not None and prev[4] < length:
             tags_list += " " + ConstantCollections.TAGS_LIST[prev[4]]
 
         tags_list = tags_list.strip()
@@ -171,14 +173,17 @@ class ValueProcessor:
         return key
 
     # Generate final fill price
-    def final_fill_price_and_volume(self, number, price, volume):
+    def final_fill_price_and_volume(self, number, status, price, volume):
         Logging.info("Generate both fill price and volume")
 
-        if self.close_status_selection(number) > 1:
-            fill_price = self.generate_temporary_fill_price(number, price)
-            pair_price_volume = (fill_price, volume)
-        else:
+        if status == "Reject" or status == "New" or status == "ToProvide":
             pair_price_volume = (0, 0)
+        else:
+            fill_price = self.generate_temporary_fill_price(number, price)
+            coeff = 1
+            if status == "PartialFilled":
+                coeff = 0.5
+            pair_price_volume = (fill_price, volume * fill_price * coeff)
 
         return pair_price_volume
 

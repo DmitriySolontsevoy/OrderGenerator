@@ -3,6 +3,8 @@ from Generators.ValueProcessor import ValueProcessor
 from Configs.Constants.ConstantCollections import ConstantCollections
 from DTOs.Order import Order
 from DTOs.Record import Record
+from ReportData.ReportData import ReportData
+import datetime
 
 
 class RecordsBatchCreator:
@@ -40,11 +42,11 @@ class RecordsBatchCreator:
         self.prev_id = self.value_creator.generate_id(self.prev_id)
         id = self.value_creator.format_id(self.prev_id)
 
-        cur_pair, cur_price, new_prev_curpair = self.value_creator.select_currency_pair(self.prev_curpair)
+        cur_pair, cur_price, self.prev_curpair = self.value_creator.select_currency_pair(self.prev_curpair)
         direction = self.value_creator.generate_direction(seed)
         init_px = self.value_creator.generate_initial_price(seed, cur_price)
         init_volume = self.value_creator.generate_init_volume(init_px)
-        desc, new_prev_desc = self.value_creator.generate_desc(self.prev_desc)
+        desc, self.prev_desc = self.value_creator.generate_desc(self.prev_desc)
         self.prev_tags = self.value_creator.generate_tags(self.prev_tags)
 
         tags = self.value_creator.concatenate_tags(self.prev_tags)
@@ -54,36 +56,36 @@ class RecordsBatchCreator:
     def __create_record(self, seed, order, status, datetime_margin):
         Logging.info("Form a single record insertion query string")
         date = self.value_creator.generate_timestamp(seed) + datetime_margin
-        fill_px, fill_volume = self.value_creator.final_fill_price_and_volume(seed, order.get_cur_price(),
+        fill_px, fill_volume = self.value_creator.final_fill_price_and_volume(seed, status, order.get_cur_price(),
                                                                               order.get_volume_in_other_currency())
-
         return Record(order, status, date, fill_px, fill_volume)
 
     def __create_records_for_order(self, seed):
         Logging.info("Creating 2-3 records for a given order")
-        zone = self.value_creator.localize_zone(seed)
+        start_time = datetime.datetime.now()
 
+        zone = self.value_creator.localize_zone(seed)
         order = self.__generate_order(seed, zone)
 
         try:
             several_records = []
-
+            type_num = self.value_creator.close_status_selection(seed)
+            type = ConstantCollections.CLOSED_DEAL_STATUSES_LIST[type_num]
             several_records.append(self.__create_record(seed, order, "ToProvide", 0))
+
             if zone == 1:
-                type_num = self.value_creator.close_status_selection(seed)
-                type = ConstantCollections.CLOSED_DEAL_STATUSES_LIST[type_num]
-                several_records.append(
-                    self.__create_record(seed, order, type, self.config["WAIT_AFTER"]))
+                several_records.append(self.__create_record(seed, order, type, self.config["WAIT_AFTER"]))
+                finish_time = datetime.datetime.now()
+                ReportData.generated_red.append((finish_time - start_time).total_seconds() * 1000)
             elif zone == 3:
-                several_records.append(
-                    self.__create_record(seed, order, "New", self.config["WAIT_BEFORE"]))
+                several_records.append(self.__create_record(seed, order, "New", self.config["WAIT_BEFORE"]))
+                finish_time = datetime.datetime.now()
+                ReportData.generated_blue.append((finish_time - start_time).total_seconds() * 1000)
             else:
-                type_num = self.value_creator.close_status_selection(seed)
-                type = ConstantCollections.CLOSED_DEAL_STATUSES_LIST[type_num]
-                several_records.append(
-                    self.__create_record(seed, order, type, 10))
-                several_records.append(
-                    self.__create_record(seed, order, "New", -10))
+                several_records.append(self.__create_record(seed, order, type, 10))
+                several_records.append(self.__create_record(seed, order, "New", -10))
+                finish_time = datetime.datetime.now()
+                ReportData.generated_green.append((finish_time - start_time).total_seconds() * 1000)
         except MemoryError:
             Logging.error("Ran out of memory! Stopping!")
             exit(self.config["MEMORY_ERROR"])

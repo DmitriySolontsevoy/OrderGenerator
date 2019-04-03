@@ -5,24 +5,27 @@ class ConfigDefaults:
     MYSQL_USER = 'root'
     MYSQL_PASS = 'root'
 
+    # BROKER CONNECTION SETTINGS
+    RABBITMQ_HOST = "localhost"
+    RABBITMQ_PORT = 5672
+    RABBITMQ_VHOST = "/"
+    RABBITMQ_USER = "guest"
+    RABBITMQ_PASS = "guest"
+
     # ERRORS
     LOG_FILE_WRITING_ERROR = 1
     QUERY_FILE_WRITING_ERROR = 2
     QUERY_FILE_READING_ERROR = 3
     MEMORY_ERROR = 4
-    ZERO_BATCHES_ERROR = 5
 
     # DELAYS
     WAIT_AFTER = 10
     WAIT_BEFORE = -10
 
     # FILE PATHS
-    QUERY_FILE_PATH = 'QUERIES.txt'
+    RECORD_FILE_PATH = 'RECORDS.txt'
     LOG_FILE_PATH = 'LOG.txt'
     REPORT_FILE_PATH = 'REPORT.txt'
-
-    # LOGGING LEVEL
-    LOG_LEVEL = 4
 
     # ID PIECES
     FIRST_ID_PART = 3333
@@ -41,13 +44,12 @@ class ConfigDefaults:
     FIRST_PAIR = 10
 
     # ZONES SPREAD
-    RED = 15 / 100
-    GREEN = 6 / 10
-    BLUE = 25 / 100
+    RED = 0.15
+    GREEN = 0.6
 
     # BATCH CONFIGURATION
-    BATCH_SIZE = 200
-    BATCHES_AMOUNT = 10
+    BATCH_SIZE = 5
+    BATCHES_AMOUNT = 1
 
     # START DESC
     FIRST_DESC = 164
@@ -76,18 +78,21 @@ class ConfigDefaults:
     CURPAIR_DIV = 15
 
     # PRICE MARGINS
-    INIT_MARGIN = 6 / 100
-    FILL_MARGIN = 5 / 100
+    INIT_MARGIN = 0.06
+    FILL_MARGIN = 0.05
 
     # PROBABILITIES FOR PPF FUNCTION
-    INIT_LESS = 3 / 10
-    INIT_MORE = 7 / 10
-    FILL_LESS = 4 / 10
-    FILL_MORE = 6 / 10
+    INIT_LESS = 0.3
+    INIT_MORE = 0.7
+    FILL_LESS = 0.4
+    FILL_MORE = 0.6
 
     # ROUND PARAMS
     PLACES_FOR_PRICE = 5
     PLACES_FOR_VOLUME = 8
 
-    # TAG COUNT
-    TAG_AMOUNT = 11
+    # LOGGER SETTINGS
+    TEXT_LOGGING = 1
+    TXT_LOG_LEVEL = 4
+    CONSOLE_LOGGING = 1
+    CONSOLE_LOG_LEVEL = 4

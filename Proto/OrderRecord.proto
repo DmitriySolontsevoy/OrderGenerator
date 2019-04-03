@@ -15,4 +15,5 @@ message OrderRecord
     required double fill_volume = 9;
     required string desc = 10;
     required string tags = 11;
+    required int32 zone = 12;
 }
