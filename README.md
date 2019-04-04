@@ -12,7 +12,7 @@ Following python modules have to be included:
 * mysql-connector 2.1.6 - for MySQL
 * scipy 1.2.1 - for generation method
 
-# Requirements
+
 All required libraries are included in requirements.txt file. So you can install them by running this command:
 
 ```bash
