@@ -167,11 +167,9 @@ class MainApp:
 
         db_service = MySQLService(self.db_conn)
 
-        queries = []
-
         for item in self.records:
             start_time = datetime.datetime.now()
-            queries.append(FormatConverter.convert_rec_to_sql_query(item))
+            db_service.execute(FormatConverter.convert_rec_to_sql_query(item))
             finish_time = datetime.datetime.now()
             zone = item.order.get_zone()
             if int(zone) == 1:
@@ -180,5 +178,3 @@ class MainApp:
                 ReportData.inserted_green.append((finish_time - start_time).total_seconds() * 1000)
             else:
                 ReportData.inserted_blue.append((finish_time - start_time).total_seconds() * 1000)
-
-        db_service.execute_many(queries)

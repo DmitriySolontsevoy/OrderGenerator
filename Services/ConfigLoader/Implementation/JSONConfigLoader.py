@@ -34,25 +34,25 @@ class JSONConfigLoader(ConfigLoader):
         self.__verify_logger_settings()
 
     def __verify_mysql(self):
-        if type(self.config["MYSQL_HOST"]) != str:
+        if type(self.config["MYSQL_HOST"]) != str or self.config["MYSQL_HOST"] == "":
             self.config["MYSQL_HOST"] = ConfigDefaults.MYSQL_HOST
-        if type(self.config["MYSQL_DB_SCHEMA"]) != str:
+        if type(self.config["MYSQL_DB_SCHEMA"]) != str or self.config["MYSQL_DB_SCHEMA"] == "":
             self.config["MYSQL_DB_SCHEMA"] = ConfigDefaults.MYSQL_DB_SCHEMA
-        if type(self.config["MYSQL_USER"]) != str:
+        if type(self.config["MYSQL_USER"]) != str or self.config["MYSQL_USER"] == "":
             self.config["MYSQL_USER"] = ConfigDefaults.MYSQL_USER
-        if type(self.config["MYSQL_PASS"]) != str:
+        if type(self.config["MYSQL_PASS"]) != str or self.config["MYSQL_PASS"] == "":
             self.config["MYSQL_PASS"] = ConfigDefaults.MYSQL_PASS
 
     def __verify_rmq(self):
-        if type(self.config["RABBITMQ_HOST"]) != str:
+        if type(self.config["RABBITMQ_HOST"]) != str or self.config["RABBITMQ_HOST"] == "":
             self.config["RABBITMQ_HOST"] = ConfigDefaults.RABBITMQ_HOST
-        if type(self.config["RABBITMQ_PORT"]) != int:
+        if type(self.config["RABBITMQ_PORT"]) != int or self.config["RABBITMQ_PORT"] == 0:
             self.config["RABBITMQ_PORT"] = ConfigDefaults.RABBITMQ_PORT
-        if type(self.config["RABBITMQ_VHOST"]) != str:
+        if type(self.config["RABBITMQ_VHOST"]) != str or self.config["RABBITMQ_VHOST"] == "":
             self.config["RABBITMQ_VHOST"] = ConfigDefaults.RABBITMQ_VHOST
-        if type(self.config["RABBITMQ_USER"]) != str:
+        if type(self.config["RABBITMQ_USER"]) != str or self.config["RABBITMQ_USER"] == "":
             self.config["RABBITMQ_USER"] = ConfigDefaults.RABBITMQ_USER
-        if type(self.config["RABBITMQ_PASS"]) != str:
+        if type(self.config["RABBITMQ_PASS"]) != str or self.config["RABBITMQ_PASS"] == "":
             self.config["RABBITMQ_PASS"] = ConfigDefaults.RABBITMQ_PASS
 
     def __verify_errors(self):
@@ -72,11 +72,11 @@ class JSONConfigLoader(ConfigLoader):
             self.config["WAIT_BEFORE"] = ConfigDefaults.WAIT_BEFORE
 
     def __verify_paths(self):
-        if type(self.config["RECORD_FILE_PATH"]) != str:
+        if type(self.config["RECORD_FILE_PATH"]) != str or self.config["RECORD_FILE_PATH"] == "":
             self.config["RECORD_FILE_PATH"] = ConfigDefaults.RECORD_FILE_PATH
-        if type(self.config["REPORT_FILE_PATH"]) != str:
+        if type(self.config["REPORT_FILE_PATH"]) != str or self.config["REPORT_FILE_PATH"] == "":
             self.config["REPORT_FILE_PATH"] = ConfigDefaults.REPORT_FILE_PATH
-        if type(self.config["LOG_FILE_PATH"]) != str:
+        if type(self.config["LOG_FILE_PATH"]) != str or self.config["LOG_FILE_PATH"] == "":
             self.config["LOG_FILE_PATH"] = ConfigDefaults.LOG_FILE_PATH
 
     def __verify_generator_initials(self):
@@ -158,9 +158,9 @@ class JSONConfigLoader(ConfigLoader):
             self.config["GREEN"] = ConfigDefaults.GREEN
 
     def __verify_batch_settings(self):
-        if type(self.config["BATCH_SIZE"]) != int:
+        if type(self.config["BATCH_SIZE"]) != int or self.config["BATCH_SIZE"] < 1:
             self.config["BATCH_SIZE"] = ConfigDefaults.BATCH_SIZE
-        if type(self.config["BATCHES_AMOUNT"]) != int:
+        if type(self.config["BATCHES_AMOUNT"]) != int or self.config["BATCHES_AMOUNT"] < 1:
             self.config["BATCHES_AMOUNT"] = ConfigDefaults.BATCHES_AMOUNT
 
     def __verify_logger_settings(self):
