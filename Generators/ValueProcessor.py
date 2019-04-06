@@ -17,10 +17,10 @@ class ValueProcessor:
         offset = self.config["ID_OFFSET"]
         divisor = self.config["ID_DIV"]
 
-        part_one = Generators.linear_congruent_generate(prev[0], multiplier, offset, divisor)
-        part_two = Generators.linear_congruent_generate(prev[1], multiplier, offset, divisor)
-        part_three = Generators.linear_congruent_generate(prev[2], multiplier, offset, divisor)
-        part_four = Generators.linear_congruent_generate(prev[3], multiplier, offset, divisor)
+        part_one = Generators.linear_congruent_generate(prev[0], multiplier, offset, divisor) + 1000
+        part_two = Generators.linear_congruent_generate(prev[1], multiplier, offset, divisor) + 1000
+        part_three = Generators.linear_congruent_generate(prev[2], multiplier, offset, divisor) + 1000
+        part_four = Generators.linear_congruent_generate(prev[3], multiplier, offset, divisor) + 1000
 
         try:
             new_prev = [part_one, part_two, part_three, part_four]
@@ -31,24 +31,22 @@ class ValueProcessor:
         return new_prev
 
     def format_id(self, prev):
-        return int(str(prev[0]) + str(prev[1]) + str(prev[2]) + str(prev[3]))
+        return str(prev[0]) + str(prev[1]) + str(prev[2]) + str(prev[3])
 
     # Generate temporary volumes that are used in both
     # initial volume and fill volume creation
     def generate_init_volume(self, number):
         Logging.text_file_logger.info("Generating temporary volume value")
         value = Generators.absolute_cosine_generate(number)
-        value *= 1000
-        value = round(value)/10
+        value *= 100
+        value = round(value, self.config["PLACES_FOR_VOLUME"])
         return value
 
     # Generate a direction for an order
     def generate_direction(self, number):
         Logging.text_file_logger.info("Selecting direction")
-        key = Generators.absolute_sine_generate(number)
-        key = round(key)
-        value = ConstantCollections.BOOLEAN_DIRECTION_LIST[key]
-        return value
+        dir = round(Generators.absolute_sine_generate(number))
+        return dir
 
     # Generate tags list for an order
     def generate_tags(self, prev):
@@ -99,10 +97,9 @@ class ValueProcessor:
         offset = self.config["CURPAIR_OFFSET"]
         divisor = self.config["CURPAIR_DIV"]
 
-        key = Generators.linear_congruent_generate(prev, multiplier, offset, divisor)
-        value = ConstantCollections.CURRENCY_PAIR_NAMES_LIST[key]
-        price = ConstantCollections.CURRENCY_PAIR_PRICES_LIST[key]
-        return value, price, key
+        pair = Generators.linear_congruent_generate(prev, multiplier, offset, divisor)
+        price = ConstantCollections.CURRENCY_PAIR_PRICES_LIST[pair]
+        return price, pair
 
     # Fluctuating initial price by a given margin
     def generate_initial_price(self, number, price):
@@ -157,33 +154,26 @@ class ValueProcessor:
         desc = str(num)
         return desc, num
 
-    # Calculate volume and round it to 8 decimal places
-    def calculate_volume(self, price, volume):
-        Logging.info("Calculate volume and round it")
-        value = price * volume
-        value = round(value, self.config["PLACES_FOR_VOLUME"])
-        return value
-
     # Select deal closing status
     def close_status_selection(self, number):
         Logging.info("Selecting type of deal closing")
         key = Generators.exponent_sine_generate(number)
-        key = math.floor(key)
-
+        key = math.floor(key) + 3
         return key
 
     # Generate final fill price
     def final_fill_price_and_volume(self, number, status, price, volume):
         Logging.info("Generate both fill price and volume")
 
-        if status == "Reject" or status == "New" or status == "ToProvide":
+        if status < 4:
             pair_price_volume = (0, 0)
         else:
             fill_price = self.generate_temporary_fill_price(number, price)
             coeff = 1
-            if status == "PartialFilled":
+            if status == 4:
                 coeff = 0.5
-            pair_price_volume = (fill_price, volume * fill_price * coeff)
+            fill_volume = round(volume * fill_price * coeff, self.config["PLACES_FOR_VOLUME"])
+            pair_price_volume = (fill_price, fill_volume)
 
         return pair_price_volume
 

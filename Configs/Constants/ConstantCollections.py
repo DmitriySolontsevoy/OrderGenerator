@@ -2,6 +2,15 @@ class ConstantCollections:
     # DON'T CHANGE THIS!!!
     # THIS IS A CONSTANT CONFIGURATION
 
+    # Dictionary of statuses
+    STATUS_DICT = {
+        "New": 1,
+        "ToProvide": 2,
+        "Reject": 3,
+        "PartialFilled": 4,
+        "Filled": 5
+    }
+
     # Currency pairs list
     CURRENCY_PAIR_NAMES_LIST = [
         "EUR/USD",
@@ -61,11 +70,4 @@ class ConstantCollections:
     BOOLEAN_DIRECTION_LIST = [
         "BUY",
         "SELL"
-    ]
-
-    # Closed deal possible statuses
-    CLOSED_DEAL_STATUSES_LIST = [
-        "Reject",
-        "PartialFilled",
-        "Filled"
     ]

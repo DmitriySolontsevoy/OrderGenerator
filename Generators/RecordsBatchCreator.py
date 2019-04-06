@@ -42,7 +42,7 @@ class RecordsBatchCreator:
         self.prev_id = self.value_creator.generate_id(self.prev_id)
         id = self.value_creator.format_id(self.prev_id)
 
-        cur_pair, cur_price, self.prev_curpair = self.value_creator.select_currency_pair(self.prev_curpair)
+        cur_price, self.prev_curpair = self.value_creator.select_currency_pair(self.prev_curpair)
         direction = self.value_creator.generate_direction(seed)
         init_px = self.value_creator.generate_initial_price(seed, cur_price)
         init_volume = self.value_creator.generate_init_volume(init_px)
@@ -51,10 +51,10 @@ class RecordsBatchCreator:
 
         tags = self.value_creator.concatenate_tags(self.prev_tags)
 
-        return Order(id, cur_pair, direction, init_px, init_volume, desc, tags, zone, cur_price)
+        return Order(id, self.prev_curpair, direction, init_px, init_volume, desc, tags, zone, cur_price)
 
     def __create_record(self, seed, order, status, datetime_margin):
-        Logging.info("Form a single record insertion query string")
+        Logging.info("Form a single record")
         date = self.value_creator.generate_timestamp(seed) + datetime_margin
         fill_px, fill_volume = self.value_creator.final_fill_price_and_volume(seed, status, order.get_cur_price(),
                                                                               order.get_volume_in_other_currency())
@@ -69,21 +69,23 @@ class RecordsBatchCreator:
 
         try:
             several_records = []
-            type_num = self.value_creator.close_status_selection(seed)
-            type = ConstantCollections.CLOSED_DEAL_STATUSES_LIST[type_num]
-            several_records.append(self.__create_record(seed, order, "ToProvide", 0))
+            type = self.value_creator.close_status_selection(seed)
+            several_records.append(self.__create_record(seed, order, ConstantCollections.STATUS_DICT.get("ToProvide"),
+                                                        0))
 
             if zone == 1:
                 several_records.append(self.__create_record(seed, order, type, self.config["WAIT_AFTER"]))
                 finish_time = datetime.datetime.now()
                 ReportData.generated_red.append((finish_time - start_time).total_seconds() * 1000)
             elif zone == 3:
-                several_records.append(self.__create_record(seed, order, "New", self.config["WAIT_BEFORE"]))
+                several_records.append(self.__create_record(seed, order, ConstantCollections.STATUS_DICT.get("New"),
+                                                            self.config["WAIT_BEFORE"]))
                 finish_time = datetime.datetime.now()
                 ReportData.generated_blue.append((finish_time - start_time).total_seconds() * 1000)
             else:
                 several_records.append(self.__create_record(seed, order, type, 10))
-                several_records.append(self.__create_record(seed, order, "New", -10))
+                several_records.append(self.__create_record(seed, order, ConstantCollections.STATUS_DICT.get("New"),
+                                                            -10))
                 finish_time = datetime.datetime.now()
                 ReportData.generated_green.append((finish_time - start_time).total_seconds() * 1000)
         except MemoryError:

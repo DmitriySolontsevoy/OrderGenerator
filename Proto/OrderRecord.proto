@@ -4,10 +4,10 @@ package tutorial;
 
 message OrderRecord
 {
-    required int64 id = 1;
-    required string cur_pair = 2;
-    required string direction = 3;
-    required string status = 4;
+    required string id = 1;
+    required int32 cur_pair = 2;
+    required int32 direction = 3;
+    required int32 status = 4;
     required int64 datetime = 5;
     required double init_px = 6;
     required double init_volume = 7;

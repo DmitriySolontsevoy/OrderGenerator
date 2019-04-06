@@ -12,16 +12,15 @@ class RabbitMQService(ExchangeQueueBrokerService):
         except Exception:
             Logging.error("Couldn't create exchange")
 
-    def create_queue(self, name, ttl=0):
+    def create_queue(self, name):
         try:
-            arguments = {'x-message-ttl': ttl}
-            self.connector.channel.queue_declare(queue=name, arguments=arguments)
+            self.connector.channel.queue_declare(queue=name)
         except Exception:
             Logging.error("Couldn't create queue")
 
-    def bind(self, exchange, queue):
+    def bind(self, exchange, queue, routing_key):
         try:
-            self.connector.channel.queue_bind(exchange=exchange, queue=queue)
+            self.connector.channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
         except Exception:
             Logging.error("Couldn't bind exchange to queue")
 

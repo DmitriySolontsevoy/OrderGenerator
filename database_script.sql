@@ -1,6 +1,8 @@
-CREATE DATABASE `generator`
+CREATE DATABASE `generator`;
 
-USE `generator`
+USE `generator`;
+
+DROP TABLE IF EXISTS `mytable`;
 
 CREATE TABLE `mytable` (
   `id` bigint(20) DEFAULT NULL,

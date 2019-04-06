@@ -11,9 +11,9 @@ class ExchangeQueueBrokerService:
         pass
 
     @abc.abstractmethod
-    def create_queue(self, name, ttl):
+    def create_queue(self, name):
         pass
 
     @abc.abstractmethod
-    def bind(self, exchange, queue):
+    def bind(self, exchange, queue, routing_key):
         pass
