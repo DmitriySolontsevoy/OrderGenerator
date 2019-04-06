@@ -10,7 +10,7 @@ Following python modules have to be included:
 * protobuf 3.7.1 - ProtoBuf
 * mysql-connector 2.1.6 - for MySQL
 
-# Requirements
+
 All required libraries are included in requirements.txt file. So you can install them by running this command:
 
 ```bash
