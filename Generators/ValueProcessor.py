@@ -37,16 +37,13 @@ class ValueProcessor:
     # initial volume and fill volume creation
     def generate_init_volume(self, number):
         Logging.text_file_logger.info("Generating temporary volume value")
-        value = Generators.absolute_cosine_generate(number)
-        value *= 100
-        value = round(value, self.config["PLACES_FOR_VOLUME"])
-        return value
+        value = Generators.absolute_cosine_generate(number) * 100
+        return round(value, self.config["PLACES_FOR_VOLUME"])
 
     # Generate a direction for an order
     def generate_direction(self, number):
         Logging.text_file_logger.info("Selecting direction")
-        dir = round(Generators.absolute_sine_generate(number))
-        return dir
+        return round(Generators.absolute_sine_generate(number))
 
     # Generate tags list for an order
     def generate_tags(self, prev):
@@ -87,17 +84,13 @@ class ValueProcessor:
         if prev[4] is not None and prev[4] < length:
             tags_list += " " + ConstantCollections.TAGS_LIST[prev[4]]
 
-        tags_list = tags_list.strip()
-        return tags_list
+        return tags_list.strip()
 
     # Pseudorandomly select a currency pair
     def select_currency_pair(self, prev):
         Logging.info("Selecting currency pair")
-        multiplier = self.config["CURPAIR_MULT"]
-        offset = self.config["CURPAIR_OFFSET"]
-        divisor = self.config["CURPAIR_DIV"]
-
-        pair = Generators.linear_congruent_generate(prev, multiplier, offset, divisor)
+        pair = Generators.linear_congruent_generate(prev, self.config["CURPAIR_MULT"], self.config["CURPAIR_OFFSET"],
+                                                    self.config["CURPAIR_DIV"])
         price = ConstantCollections.CURRENCY_PAIR_PRICES_LIST[pair]
         return price, pair
 
@@ -111,15 +104,13 @@ class ValueProcessor:
             dir = self.config["INIT_MORE"]
 
         value = norm.ppf(dir, price, price * margin)
-        value = round(value, self.config["PLACES_FOR_PRICE"])
-        return value
+        return round(value, self.config["PLACES_FOR_PRICE"])
 
     # Assign an order to a specific zone
     def localize_zone(self, number):
         Logging.info("Figuring out the zone of order")
         total_to_generate = self.config["BATCH_SIZE"] * self.config["BATCHES_AMOUNT"]
         partition = number/total_to_generate
-
         num = 3
 
         if partition < self.config["RED"]:
@@ -140,31 +131,22 @@ class ValueProcessor:
             dir = self.config["FILL_MORE"]
 
         value = norm.ppf(dir, price, price * margin)
-        value = round(value, self.config["PLACES_FOR_PRICE"])
-        return value
+        return round(value, self.config["PLACES_FOR_PRICE"])
 
     # Form a 3-character description
     def generate_desc(self, prev):
         Logging.info("Generating description")
-        multiplier = self.config["DESC_MULT"]
-        offset = self.config["DESC_OFFSET"]
-        divisor = self.config["DESC_DIV"]
-
-        num = Generators.linear_congruent_generate(prev, multiplier, offset, divisor)
-        desc = str(num)
-        return desc, num
+        return Generators.linear_congruent_generate(prev, self.config["DESC_MULT"], self.config["DESC_OFFSET"],
+                                                    self.config["DESC_DIV"])
 
     # Select deal closing status
     def close_status_selection(self, number):
         Logging.info("Selecting type of deal closing")
-        key = Generators.exponent_sine_generate(number)
-        key = math.floor(key) + 3
-        return key
+        return math.floor(Generators.exponent_sine_generate(number)) + 3
 
     # Generate final fill price
     def final_fill_price_and_volume(self, number, status, price, volume):
         Logging.info("Generate both fill price and volume")
-
         if status < 4:
             pair_price_volume = (0, 0)
         else:
@@ -181,7 +163,5 @@ class ValueProcessor:
     # adding milliseconds
     def generate_timestamp(self, number):
         Logging.info("Generating timestamp")
-        value = Generators.absolute_sine_generate(number)
-        value *= 100000
-        value = round(value) + self.config["BEGINNING_OF_TIME"]
-        return value
+        value = Generators.absolute_sine_generate(number) * 100000
+        return round(value) + self.config["BEGINNING_OF_TIME"]

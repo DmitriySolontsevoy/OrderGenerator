@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='tutorial',
   syntax='proto2',
   serialized_options=None,
-  serialized_pb=_b('\n\x17Proto/OrderRecord.proto\x12\x08tutorial\"\xd6\x01\n\x0bOrderRecord\x12\n\n\x02id\x18\x01 \x02(\t\x12\x10\n\x08\x63ur_pair\x18\x02 \x02(\x05\x12\x11\n\tdirection\x18\x03 \x02(\x05\x12\x0e\n\x06status\x18\x04 \x02(\x05\x12\x10\n\x08\x64\x61tetime\x18\x05 \x02(\x03\x12\x0f\n\x07init_px\x18\x06 \x02(\x01\x12\x13\n\x0binit_volume\x18\x07 \x02(\x01\x12\x0f\n\x07\x66ill_px\x18\x08 \x02(\x01\x12\x13\n\x0b\x66ill_volume\x18\t \x02(\x01\x12\x0c\n\x04\x64\x65sc\x18\n \x02(\t\x12\x0c\n\x04tags\x18\x0b \x02(\t\x12\x0c\n\x04zone\x18\x0c \x02(\x05')
+  serialized_pb=_b('\n\x17Proto/OrderRecord.proto\x12\x08tutorial\"\xf3\x01\n\x0bOrderRecord\x12\n\n\x02id\x18\x01 \x02(\t\x12\x15\n\rcurrency_pair\x18\x02 \x02(\x05\x12\x11\n\tdirection\x18\x03 \x02(\x05\x12\x0e\n\x06status\x18\x04 \x02(\x05\x12\x10\n\x08\x64\x61tetime\x18\x05 \x02(\x03\x12\x0f\n\x07init_px\x18\x06 \x02(\x01\x12\x13\n\x0binit_volume\x18\x07 \x02(\x01\x12\x0f\n\x07\x66ill_px\x18\x08 \x02(\x01\x12\x13\n\x0b\x66ill_volume\x18\t \x02(\x01\x12\x0c\n\x04\x64\x65sc\x18\n \x02(\t\x12\x0c\n\x04tags\x18\x0b \x02(\t\x12\x0c\n\x04zone\x18\x0c \x02(\x05\x12\x16\n\x0e\x63urrency_price\x18\r \x02(\x01')
 )
 
 
@@ -41,7 +41,7 @@ _ORDERRECORD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='cur_pair', full_name='tutorial.OrderRecord.cur_pair', index=1,
+      name='currency_pair', full_name='tutorial.OrderRecord.currency_pair', index=1,
       number=2, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -117,6 +117,13 @@ _ORDERRECORD = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='currency_price', full_name='tutorial.OrderRecord.currency_price', index=12,
+      number=13, type=1, cpp_type=5, label=2,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -130,7 +137,7 @@ _ORDERRECORD = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=38,
-  serialized_end=252,
+  serialized_end=281,
 )
 
 DESCRIPTOR.message_types_by_name['OrderRecord'] = _ORDERRECORD

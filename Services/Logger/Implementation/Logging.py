@@ -12,6 +12,11 @@ class Logging:
             Logging.targets.append(Logging.console_logger)
 
     @staticmethod
+    def start():
+        for logger in Logging.targets:
+            logger.start()
+
+    @staticmethod
     def debug(message):
         for logger in Logging.targets:
             logger.debug(message)

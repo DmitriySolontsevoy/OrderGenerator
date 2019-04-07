@@ -29,8 +29,8 @@
 
     "FIRST_ID_PART": 3563,
     "SECOND_ID_PART": 2782,
-    "THIRD_ID_PART": 1001,
-    "FOURTH_ID_PART": 1431,
+    "THIRD_ID_PART": 1021,
+    "FOURTH_ID_PART": 1943,
 
     "FIRST_PAIR": 10,
 
@@ -47,8 +47,8 @@
     "GREEN": 0.6,
 
 
-    "BATCH_SIZE": 200,
-    "BATCHES_AMOUNT": 1,
+    "BATCH_SIZE": 10,
+    "BATCHES_AMOUNT": 200,
 
 
     "BEGINNING_OF_TIME": 1540000000000,
@@ -58,9 +58,9 @@
     "PLACES_FOR_VOLUME": 8,
 
 
-    "ID_MULT": 3,
-    "ID_OFFSET": 2,
-    "ID_DIV": 4000,
+    "ID_MULT": 2,
+    "ID_OFFSET": 1,
+    "ID_DIV": 8935,
 
     "TAGS_MULT": 3,
     "TAGS_OFFSET": 4,
@@ -83,9 +83,9 @@
     "FILL_MORE": 0.6,
 
 
-    "TEXT_LOGGING": 0,
+    "TEXT_LOGGING": 1,
     "TXT_LOG_LEVEL": 4,
 
     "CONSOLE_LOGGING": 1,
-    "CONSOLE_LOG_LEVEL": 4
+    "CONSOLE_LOG_LEVEL": 1
 }

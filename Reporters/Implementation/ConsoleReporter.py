@@ -33,4 +33,5 @@ class ConsoleReporter(Reporter):
             minimum = min(list)
             maximum = max(list)
             average = s/amount
-            print("{} (amount = {}):\nMin: {}\n Max: {}\nAvg: {}\n".format(flavor_text, amount, minimum, maximum, average))
+            print("{} (amount = {}):\nMin: {} ms\nMax: {} ms\nAvg: {} ms\n".format(flavor_text, amount, minimum,
+                                                                                   maximum, average))

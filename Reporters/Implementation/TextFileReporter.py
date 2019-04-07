@@ -40,7 +40,5 @@ class TextFileReporter(Reporter):
             minimum = min(list)
             maximum = max(list)
             average = s/amount
-            self.file_service.write_line(self.file, "{} (amount = {}):\nMin: {}\nMax: {}\nAvg: {}\n".format(flavor_text,
-                                                                                                       amount, minimum,
-                                                                                                       maximum,
-                                                                                                       average))
+            self.file_service.write_line(self.file, "{} (amount = {}):\nMin: {} ms\nMax: {} ms\nAvg: {} ms\n"
+                                         .format(flavor_text, amount, minimum, maximum, average))

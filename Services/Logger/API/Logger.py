@@ -26,7 +26,7 @@ class Logger:
         pass
 
     @abc.abstractmethod
-    def __log(self, level, message, mode):
+    def __log(self, level, message):
         pass
 
     @staticmethod

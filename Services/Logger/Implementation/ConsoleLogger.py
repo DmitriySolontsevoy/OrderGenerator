@@ -25,6 +25,6 @@ class ConsoleLogger(Logger):
         if self.level > 0:
             self.__log("ERROR", message)
 
-    def __log(self, level, message, mode=None):
+    def __log(self, level, message):
         print("(At time: " + datetime.datetime.today().strftime(
               "%Y-%m-%d %H:%M:%S") + ") [" + level + "]: " + message)

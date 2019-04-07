@@ -5,7 +5,7 @@ package tutorial;
 message OrderRecord
 {
     required string id = 1;
-    required int32 cur_pair = 2;
+    required int32 currency_pair = 2;
     required int32 direction = 3;
     required int32 status = 4;
     required int64 datetime = 5;
@@ -16,4 +16,5 @@ message OrderRecord
     required string desc = 10;
     required string tags = 11;
     required int32 zone = 12;
+    required double currency_price = 13;
 }

@@ -36,7 +36,7 @@ class RecordsBatchCreator:
 
         return all_batch_records
 
-    def __generate_order(self, seed, zone):
+    def __generate_order(self, seed):
         Logging.info("Generate common fields amongst the records in order")
 
         self.prev_id = self.value_creator.generate_id(self.prev_id)
@@ -46,12 +46,13 @@ class RecordsBatchCreator:
         direction = self.value_creator.generate_direction(seed)
         init_px = self.value_creator.generate_initial_price(seed, cur_price)
         init_volume = self.value_creator.generate_init_volume(init_px)
-        desc, self.prev_desc = self.value_creator.generate_desc(self.prev_desc)
+        self.prev_desc = self.value_creator.generate_desc(self.prev_desc)
         self.prev_tags = self.value_creator.generate_tags(self.prev_tags)
+        zone = self.value_creator.localize_zone(seed)
 
         tags = self.value_creator.concatenate_tags(self.prev_tags)
 
-        return Order(id, self.prev_curpair, direction, init_px, init_volume, desc, tags, zone, cur_price)
+        return Order(id, self.prev_curpair, direction, init_px, init_volume, str(self.prev_desc), tags, zone, cur_price)
 
     def __create_record(self, seed, order, status, datetime_margin):
         Logging.info("Form a single record")
@@ -63,21 +64,17 @@ class RecordsBatchCreator:
     def __create_records_for_order(self, seed):
         Logging.info("Creating 2-3 records for a given order")
         start_time = datetime.datetime.now()
-
-        zone = self.value_creator.localize_zone(seed)
-        order = self.__generate_order(seed, zone)
-
+        order = self.__generate_order(seed)
         try:
             several_records = []
             type = self.value_creator.close_status_selection(seed)
             several_records.append(self.__create_record(seed, order, ConstantCollections.STATUS_DICT.get("ToProvide"),
                                                         0))
-
-            if zone == 1:
+            if order.get_zone() == 1:
                 several_records.append(self.__create_record(seed, order, type, self.config["WAIT_AFTER"]))
                 finish_time = datetime.datetime.now()
                 ReportData.generated_red.append((finish_time - start_time).total_seconds() * 1000)
-            elif zone == 3:
+            elif order.get_zone() == 3:
                 several_records.append(self.__create_record(seed, order, ConstantCollections.STATUS_DICT.get("New"),
                                                             self.config["WAIT_BEFORE"]))
                 finish_time = datetime.datetime.now()
