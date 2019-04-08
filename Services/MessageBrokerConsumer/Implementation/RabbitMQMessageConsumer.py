@@ -16,7 +16,7 @@ class RabbitMQMessageConsumer(MessageConsumer):
 
     def __callback(self, channel, method, header, body):
         channel.basic_ack(delivery_tag=method.delivery_tag)
-        if body.__str__() == "b'quit'":
+        if body.__str__() == "b'exit'":
             self.abort_votes += 1
         else:
             obj = OrderRecord()
@@ -26,17 +26,15 @@ class RabbitMQMessageConsumer(MessageConsumer):
             except DecodeError as err:
                 Logging.error("Couldn't parse proto message. Error: {}".format(err.__str__()))
 
-            if self.db_service.connector.connection is not None:
-                self.__insert(FormatConverter.convert_proto_to_rec(obj))
+            self.__insert(FormatConverter.convert_proto_to_rec(obj))
 
         if self.abort_votes >= 5:
             channel.basic_cancel(consumer_tag="hello-consumer")
             channel.stop_consuming()
-            if self.db_service.connector.connection is not None:
-                self.db_service.connector.close_connection()
+            self.db_service.connector.close_connection()
 
     def consume(self):
-        self.__clear_table()
+        self.db_service.execute("TRUNCATE mytable")
         channel = self.connector.connection.channel()
         channel.basic_consume("New", self.__callback)
         channel.basic_consume("ToProvide", self.__callback)
@@ -44,9 +42,6 @@ class RabbitMQMessageConsumer(MessageConsumer):
         channel.basic_consume("PartialFilled", self.__callback)
         channel.basic_consume("Filled", self.__callback)
         channel.start_consuming()
-
-    def __clear_table(self):
-        self.db_service.execute("TRUNCATE mytable")
 
     def __insert(self, record):
         start_time = datetime.datetime.now()

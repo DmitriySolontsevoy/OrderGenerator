@@ -102,17 +102,17 @@ class MainApp:
             else:
                 ReportData.messaged_blue.append((finish_time - start_time).total_seconds() * 1000)
 
-        service.publish("Main", "New", "quit")
-        service.publish("Main", "ToProvide", "quit")
-        service.publish("Main", "Reject", "quit")
-        service.publish("Main", "PartialFilled", "quit")
-        service.publish("Main", "Filled", "quit")
+        service.publish("Main", "New", "exit")
+        service.publish("Main", "ToProvide", "exit")
+        service.publish("Main", "Reject", "exit")
+        service.publish("Main", "PartialFilled", "exit")
+        service.publish("Main", "Filled", "exit")
 
     def __get_from_rabbit(self):
         db_conn = MySQLConnector()
         db_conn.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
                                 self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
-        db_service = MySQLService(db_conn)
+        db_service = MySQLService(db_conn, self.config)
 
         consumer = RabbitMQMessageConsumer(self.consume_conn, self.config, db_service)
         consumer.consume()

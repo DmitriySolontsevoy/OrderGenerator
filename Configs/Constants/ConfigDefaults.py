@@ -96,3 +96,6 @@ class ConfigDefaults:
     TXT_LOG_LEVEL = 4
     CONSOLE_LOGGING = 1
     CONSOLE_LOG_LEVEL = 4
+
+    # SLEEP BEFORE RECONNECT
+    RECONNECT_DELAY = 5

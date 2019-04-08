@@ -40,7 +40,7 @@ class JSONConfigLoader(ConfigLoader):
             self.config["MYSQL_DB_SCHEMA"] = ConfigDefaults.MYSQL_DB_SCHEMA
         if type(self.config["MYSQL_USER"]) != str or self.config["MYSQL_USER"] == "":
             self.config["MYSQL_USER"] = ConfigDefaults.MYSQL_USER
-        if type(self.config["MYSQL_PASS"]) != str or self.config["MYSQL_PASS"] == "":
+        if type(self.config["MYSQL_PASS"]) != str:
             self.config["MYSQL_PASS"] = ConfigDefaults.MYSQL_PASS
 
     def __verify_rmq(self):
@@ -52,7 +52,7 @@ class JSONConfigLoader(ConfigLoader):
             self.config["RABBITMQ_VHOST"] = ConfigDefaults.RABBITMQ_VHOST
         if type(self.config["RABBITMQ_USER"]) != str or self.config["RABBITMQ_USER"] == "":
             self.config["RABBITMQ_USER"] = ConfigDefaults.RABBITMQ_USER
-        if type(self.config["RABBITMQ_PASS"]) != str or self.config["RABBITMQ_PASS"] == "":
+        if type(self.config["RABBITMQ_PASS"]) != str:
             self.config["RABBITMQ_PASS"] = ConfigDefaults.RABBITMQ_PASS
 
     def __verify_errors(self):
