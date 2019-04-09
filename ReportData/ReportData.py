@@ -7,13 +7,7 @@ class ReportData:
     messaged_green = []
     messaged_blue = []
 
-    written_red = []
-    written_green = []
-    written_blue = []
-
-    read_red = []
-    read_green = []
-    read_blue = []
+    received_from_rabbit = 0
 
     inserted_red = []
     inserted_green = []

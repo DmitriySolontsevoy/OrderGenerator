@@ -7,6 +7,7 @@ from Services.MessageBrokerConsumer.Implementation.RabbitMQMessageConsumer impor
 from Services.Connector.Implementation.RabbitMQConnector import RabbitMQConnector
 from Services.MessageBrokerService.Implementation.RabbitMQService import RabbitMQService
 from Reporters.Implementation.TextFileReporter import TextFileReporter
+from Reporters.Implementation.ConsoleReporter import ConsoleReporter
 from Services.FileService.Implementation.TextFileService import TextFileService
 from Configs.Constants.ConstantCollections import ConstantCollections
 from Services.DatabaseService.Implementation.MySQLService import MySQLService
@@ -14,6 +15,7 @@ from Services.Connector.Implementation.MySQLConnector import MySQLConnector
 from ReportData.ReportData import ReportData
 from Utils.FormatConverter import FormatConverter
 import datetime
+import threading
 
 
 class MainApp:
@@ -24,6 +26,8 @@ class MainApp:
         self.abspath = abspath + "/"
         self.broker_conn = RabbitMQConnector()
         self.consume_conn = RabbitMQConnector()
+        self.console_reporter = None
+        self.text_reporter = None
 
     def prep(self):
         parser = JSONConfigLoader(self.abspath + "Configs/Configurable/config.json")
@@ -33,7 +37,6 @@ class MainApp:
                                                   self.config["TXT_LOG_LEVEL"])
         Logging.console_logger = ConsoleLogger(self.config["CONSOLE_LOG_LEVEL"])
         Logging.init(self.config["TEXT_LOGGING"], self.config["CONSOLE_LOGGING"])
-
         Logging.start()
 
         self.broker_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
@@ -44,15 +47,35 @@ class MainApp:
                                           self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
                                           self.config["RABBITMQ_PASS"])
 
+        db_conn = MySQLConnector()
+        db_conn.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
+                                self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
+        db_report_service = MySQLService(db_conn, self.config)
+        db_report_service.execute("TRUNCATE mytable")
+
+        self.text_reporter = TextFileReporter(self.abspath + self.config["REPORT_FILE_PATH"],
+                                              self.file_service, db_report_service)
+        self.console_reporter = ConsoleReporter(db_report_service)
+
     def exec(self):
+        thread = threading.Thread(target=self.__reporting_listener, args=())
+        thread.daemon = True
+        thread.start()
+
         self.__generate_records()
         self.__post_to_rabbit()
         self.records = None
         self.__get_from_rabbit()
 
+    def __reporting_listener(self):
+        while True:
+            request = input("Type 'status' to get a report\n>>> ")
+            if request == "status":
+                self.report()
+
     def report(self):
-        text_reporter = TextFileReporter(self.abspath + self.config["REPORT_FILE_PATH"], self.file_service)
-        text_reporter.report()
+        self.text_reporter.report()
+        self.console_reporter.report()
 
     def free(self):
         self.file_service = None

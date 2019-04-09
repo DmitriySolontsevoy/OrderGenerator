@@ -23,6 +23,7 @@ class RabbitMQMessageConsumer(MessageConsumer):
             try:
                 obj.ParseFromString(body)
                 Logging.info("Message received: {}".format(obj))
+                ReportData.received_from_rabbit += 1
             except DecodeError as err:
                 Logging.error("Couldn't parse proto message. Error: {}".format(err.__str__()))
 
@@ -31,10 +32,8 @@ class RabbitMQMessageConsumer(MessageConsumer):
         if self.abort_votes >= 5:
             channel.basic_cancel(consumer_tag="hello-consumer")
             channel.stop_consuming()
-            self.db_service.connector.close_connection()
 
     def consume(self):
-        self.db_service.execute("TRUNCATE mytable")
         channel = self.connector.connection.channel()
         channel.basic_consume("New", self.__callback)
         channel.basic_consume("ToProvide", self.__callback)

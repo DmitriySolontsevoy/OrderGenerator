@@ -7,5 +7,9 @@ class Reporter:
         pass
 
     @abc.abstractmethod
-    def report_list(self, list, flavor_text):
+    def __report_list(self, list, flavor_text):
+        pass
+
+    @abc.abstractmethod
+    def __report_single_metric(self, metric, flavor_text):
         pass

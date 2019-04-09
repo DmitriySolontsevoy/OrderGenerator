@@ -35,6 +35,23 @@ class MySQLService(SQLDatabaseService):
 
         return cursor
 
+    def select(self, query):
+        cursor = self.__try_to_create_cursor()
+
+        try:
+            cursor.execute(query)
+        except mysql.connector.Error as err:
+            Logging.error("Error while executing query")
+
+        try:
+            result = cursor.fetchall()
+        except mysql.connector.Error as err:
+            Logging.error("Error while fetching result")
+            result = None
+
+        cursor.close()
+        return result
+
     def execute(self, query):
         cursor = self.__try_to_create_cursor()
 
