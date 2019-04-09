@@ -47,8 +47,8 @@
     "GREEN": 0.6,
 
 
-    "BATCH_SIZE": 3000,
-    "BATCHES_AMOUNT": 1,
+    "BATCH_SIZE": 100,
+    "BATCHES_AMOUNT": 10,
 
 
     "BEGINNING_OF_TIME": 1540000000000,
@@ -83,7 +83,7 @@
     "FILL_MORE": 0.6,
 
 
-    "TEXT_LOGGING": 1,
+    "TEXT_LOGGING": 0,
     "TXT_LOG_LEVEL": 4,
 
     "CONSOLE_LOGGING": 1,
