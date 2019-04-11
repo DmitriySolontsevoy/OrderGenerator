@@ -27,12 +27,26 @@ class TextFileReporter(Reporter):
         self.__report_list(ReportData.inserted_green, "Green zone DB insertion")
         self.__report_list(ReportData.inserted_blue, "Blue zone DB insertion")
 
-        result = self.db_service.select("SELECT count(*) FROM mytable UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 1 UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 2 UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 3")
+        Logging.info("Started console reporting")
+        self.__report_list(ReportData.generated_red, "Red zone generation")
+        self.__report_list(ReportData.generated_green, "Green zone generation")
+        self.__report_list(ReportData.generated_blue, "Blue zone generation")
+
+        self.__report_list(ReportData.messaged_red, "Red zone RMQ messaging")
+        self.__report_list(ReportData.messaged_green, "Green zone RMQ messaging")
+        self.__report_list(ReportData.messaged_blue, "Blue zone RMQ messaging")
+
+        self.__report_single_metric(ReportData.received_from_rabbit, "Amount of messages received from RMQ")
+
+        self.__report_list(ReportData.inserted_red, "Red zone DB insertion")
+        self.__report_list(ReportData.inserted_green, "Green zone DB insertion")
+        self.__report_list(ReportData.inserted_blue, "Blue zone DB insertion")
 
         if len(ReportData.inserted_red) > 0 or len(ReportData.inserted_green) > 0 or len(ReportData.inserted_blue) > 0:
+            result = self.db_service.select("SELECT count(*) FROM mytable UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 1 UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 2 UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 3")
             self.__report_single_metric(int(result[0][0]), "Amount of records in the database")
             self.__report_single_metric(result[1][0], "Average initial volume for red zone")
             self.__report_single_metric(result[2][0], "Average initial volume for green zone")

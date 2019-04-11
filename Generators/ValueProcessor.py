@@ -12,7 +12,7 @@ class ValueProcessor:
     # Generate the ID in 4 pieces using the
     # linear congruent method
     def generate_id(self, prev):
-        Logging.text_file_logger.info("Generating ID")
+        Logging.info("Generating ID")
         multiplier = self.config["ID_MULT"]
         offset = self.config["ID_OFFSET"]
         divisor = self.config["ID_DIV"]
@@ -36,18 +36,18 @@ class ValueProcessor:
     # Generate temporary volumes that are used in both
     # initial volume and fill volume creation
     def generate_init_volume(self, number):
-        Logging.text_file_logger.info("Generating temporary volume value")
+        Logging.info("Generating temporary volume value")
         value = Generators.absolute_cosine_generate(number) * 100
         return round(value, self.config["PLACES_FOR_VOLUME"])
 
     # Generate a direction for an order
     def generate_direction(self, number):
-        Logging.text_file_logger.info("Selecting direction")
+        Logging.info("Selecting direction")
         return round(Generators.absolute_sine_generate(number))
 
     # Generate tags list for an order
     def generate_tags(self, prev):
-        Logging.text_file_logger.info("Generating tag list")
+        Logging.info("Generating tag list")
         multiplier = self.config["TAGS_MULT"]
         offset = self.config["TAGS_OFFSET"]
         divisor = self.config["TAGS_DIV"]

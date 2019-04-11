@@ -23,19 +23,15 @@ class ConsoleReporter(Reporter):
         self.__report_list(ReportData.inserted_green, "Green zone DB insertion")
         self.__report_list(ReportData.inserted_blue, "Blue zone DB insertion")
 
-        result = self.db_service.select("SELECT count(*) FROM mytable UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 1 UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 2 UNION "
-                                        "SELECT avg(init_volume) FROM mytable WHERE zone = 3")
-
-        print(result)
-
         if len(ReportData.inserted_red) > 0 or len(ReportData.inserted_green) > 0 or len(ReportData.inserted_blue) > 0:
+            result = self.db_service.select("SELECT count(*) FROM mytable UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 1 UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 2 UNION "
+                                            "SELECT avg(init_volume) FROM mytable WHERE zone = 3")
             self.__report_single_metric(int(result[0][0]), "Amount of records in the database")
             self.__report_single_metric(result[1][0], "Average initial volume for red zone")
             self.__report_single_metric(result[2][0], "Average initial volume for green zone")
             self.__report_single_metric(result[3][0], "Average initial volume for blue zone")
-
 
     def __report_list(self, list, flavor_text):
         if len(list) > 0:
