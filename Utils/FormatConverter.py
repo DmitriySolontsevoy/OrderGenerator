@@ -42,8 +42,8 @@ class FormatConverter:
 
     @staticmethod
     def convert_rec_to_sql_query(record):
-        return "INSERT INTO mytable VALUES('{}',{},{},{},{},{},{},{},{},'{}','{}',{});"\
+        return "INSERT INTO mytable VALUES('{}',{},{},{},{},{},{},{},{},'{}','{}');"\
             .format(record.order.get_id(), record.order.get_cur_pair(), record.order.get_direction(),
                     record.get_status(), record.get_datetime(), record.order.get_init_px(),
                     record.order.get_init_volume(), record.get_fill_px(), record.get_fill_volume(),
-                    record.order.get_desc(), record.order.get_tags(), record.order.get_zone())
+                    record.order.get_desc(), record.order.get_tags())

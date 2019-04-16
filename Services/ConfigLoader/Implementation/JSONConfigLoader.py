@@ -162,6 +162,8 @@ class JSONConfigLoader(ConfigLoader):
             self.config["BATCH_SIZE"] = ConfigDefaults.BATCH_SIZE
         if type(self.config["BATCHES_AMOUNT"]) != int or self.config["BATCHES_AMOUNT"] < 1:
             self.config["BATCHES_AMOUNT"] = ConfigDefaults.BATCHES_AMOUNT
+        if type(self.config["SQL_BATCH_SIZE"]) != int or self.config["SQL_BATCH_SIZE"] < 1:
+            self.config["SQL_BATCH_SIZE"] = ConfigDefaults.SQL_BATCH_SIZE
 
     def __verify_logger_settings(self):
         if type(self.config["TEXT_LOGGING"]) != int or not (-1 < self.config["TEXT_LOGGING"] < 2):

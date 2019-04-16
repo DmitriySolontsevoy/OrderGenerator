@@ -16,6 +16,5 @@ CREATE TABLE `mytable` (
   `fill_volume` double DEFAULT NULL,
   `desc` varchar(4) DEFAULT NULL,
   `tags` varchar(45) DEFAULT NULL,
-  `zone` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

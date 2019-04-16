@@ -11,16 +11,20 @@ class MySQLService(SQLDatabaseService):
         self.connector = conn
         self.config = config
 
+    def __commit(self):
+        try:
+            self.connector.connection.commit()
+        except mysql.connector.Error as err:
+            Logging.error("Error while committing changes")
+
     def __try_to_create_cursor(self):
         cursor = None
-
         try:
             cursor = self.connector.connection.cursor()
         except AttributeError:
             Logging.error("Couldn't work with connection! Is MySQL Server running? Reconnecting after {} secs."
                           .format(self.config["RECONNECT_DELAY"]))
             flag = False
-
             while not flag:
                 try:
                     time.sleep(self.config["RECONNECT_DELAY"])
@@ -32,12 +36,10 @@ class MySQLService(SQLDatabaseService):
                 except AttributeError:
                     Logging.error("Couldn't work with connection! Is MySQL Server running?"
                                   "Reconnecting again after {} secs.".format(self.config["RECONNECT_DELAY"]))
-
         return cursor
 
     def select(self, query):
         cursor = self.__try_to_create_cursor()
-
         try:
             cursor.execute(query)
         except mysql.connector.Error as err:
@@ -48,37 +50,24 @@ class MySQLService(SQLDatabaseService):
         except mysql.connector.Error as err:
             Logging.error("Error while fetching result")
             result = None
-
         cursor.close()
         return result
 
     def execute(self, query):
         cursor = self.__try_to_create_cursor()
-
         try:
             cursor.execute(query)
         except mysql.connector.Error as err:
-            Logging.error("Error while executing query")
-
-        try:
-            self.connector.connection.commit()
-        except mysql.connector.Error as err:
-            Logging.error("Error while committing changes")
-
+            Logging.error("Error while executing query. Error: {}".format(err.msg))
         cursor.close()
+        self.__commit()
 
     def execute_many(self, queries):
         cursor = self.__try_to_create_cursor()
-
         try:
             for item in queries:
                 cursor.execute(item)
         except mysql.connector.Error as err:
             Logging.error("Error while executing queries")
-
-        try:
-            self.connector.connection.commit()
-        except mysql.connector.Error as err:
-            Logging.error("Error while committing changes")
-
         cursor.close()
+        self.__commit()

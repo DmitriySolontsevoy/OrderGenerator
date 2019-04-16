@@ -74,7 +74,6 @@ class MainApp:
                 self.report()
 
     def report(self):
-        self.text_reporter.report()
         self.console_reporter.report()
 
     def free(self):
@@ -124,12 +123,6 @@ class MainApp:
                 ReportData.messaged_green.append((finish_time - start_time).total_seconds() * 1000)
             else:
                 ReportData.messaged_blue.append((finish_time - start_time).total_seconds() * 1000)
-
-        service.publish("Main", "New", "exit")
-        service.publish("Main", "ToProvide", "exit")
-        service.publish("Main", "Reject", "exit")
-        service.publish("Main", "PartialFilled", "exit")
-        service.publish("Main", "Filled", "exit")
 
     def __get_from_rabbit(self):
         db_conn = MySQLConnector()

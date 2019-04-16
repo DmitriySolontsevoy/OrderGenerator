@@ -8,7 +8,3 @@ class ReportData:
     messaged_blue = []
 
     received_from_rabbit = 0
-
-    inserted_red = []
-    inserted_green = []
-    inserted_blue = []

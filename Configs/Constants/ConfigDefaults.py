@@ -50,6 +50,7 @@ class ConfigDefaults:
     # BATCH CONFIGURATION
     BATCH_SIZE = 5
     BATCHES_AMOUNT = 1
+    SQL_BATCH_SIZE = 100
 
     # START DESC
     FIRST_DESC = 164
