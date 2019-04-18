@@ -43,10 +43,6 @@ class MainApp:
                                          self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
                                          self.config["RABBITMQ_PASS"])
 
-        self.consume_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
-                                          self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
-                                          self.config["RABBITMQ_PASS"])
-
         db_conn = MySQLConnector()
         db_conn.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
                                 self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
@@ -58,16 +54,20 @@ class MainApp:
         self.console_reporter = ConsoleReporter(db_report_service)
 
     def exec(self):
-        thread = threading.Thread(target=self.__reporting_listener, args=())
+        thread = threading.Thread(target=self.__input_listener, args=())
         thread.daemon = True
-        thread.start()
+        #thread.start()
 
         self.__generate_records()
         self.__post_to_rabbit()
         self.records = None
+
+        self.consume_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
+                                          self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
+                                          self.config["RABBITMQ_PASS"])
         self.__get_from_rabbit()
 
-    def __reporting_listener(self):
+    def __input_listener(self):
         while True:
             request = input("Type 'status' to get a report\n>>> ")
             if request == "status":
@@ -89,7 +89,7 @@ class MainApp:
             self.records.extend(batch)
 
     def __broker_setup(self):
-        broker_service = RabbitMQService(self.broker_conn)
+        broker_service = RabbitMQService(self.broker_conn, self.config)
         broker_service.create_exchange("Main", "topic")
         broker_service.create_queue("New")
         broker_service.create_queue("ToProvide")

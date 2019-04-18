@@ -47,8 +47,8 @@
     "GREEN": 0.6,
 
 
-    "BATCH_SIZE": 100,
-    "BATCHES_AMOUNT": 10,
+    "BATCH_SIZE": 200,
+    "BATCHES_AMOUNT": 20,
     "SQL_BATCH_SIZE": 100,
 
 
@@ -90,5 +90,6 @@
     "CONSOLE_LOGGING": 1,
     "CONSOLE_LOG_LEVEL": 1,
 
-    "RECONNECT_DELAY": 5
+    "SQL_RECONNECT_DELAY": 5,
+    "RMQ_RECONNECT_DELAY": 5
 }

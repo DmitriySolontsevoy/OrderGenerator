@@ -11,10 +11,10 @@ class ValueProcessor:
 
     # Generate the ID in 4 pieces using the
     # linear congruent method
-    def generate_id(self, prev):
+    def generate_id(self, prev, number):
         Logging.info("Generating ID")
         multiplier = self.config["ID_MULT"]
-        offset = self.config["ID_OFFSET"]
+        offset = self.config["ID_OFFSET"] + number
         divisor = self.config["ID_DIV"]
 
         part_one = Generators.linear_congruent_generate(prev[0], multiplier, offset, divisor) + 1000

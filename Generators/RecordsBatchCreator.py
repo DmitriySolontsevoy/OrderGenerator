@@ -39,7 +39,7 @@ class RecordsBatchCreator:
     def __generate_order(self, seed):
         Logging.info("Generate common fields amongst the records in order")
 
-        self.prev_id = self.value_creator.generate_id(self.prev_id)
+        self.prev_id = self.value_creator.generate_id(self.prev_id, seed)
         id = self.value_creator.format_id(self.prev_id)
 
         cur_price, self.prev_curpair = self.value_creator.select_currency_pair(self.prev_curpair)
