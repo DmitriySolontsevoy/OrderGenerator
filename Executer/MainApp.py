@@ -28,6 +28,8 @@ class MainApp:
         self.consume_conn = RabbitMQConnector()
         self.console_reporter = None
         self.text_reporter = None
+        self.stop_consume_event = None
+        self.publisher = None
 
     def prep(self):
         parser = JSONConfigLoader(self.abspath + "Configs/Configurable/config.json")
@@ -38,10 +40,6 @@ class MainApp:
         Logging.console_logger = ConsoleLogger(self.config["CONSOLE_LOG_LEVEL"])
         Logging.init(self.config["TEXT_LOGGING"], self.config["CONSOLE_LOGGING"])
         Logging.start()
-
-        self.broker_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
-                                         self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
-                                         self.config["RABBITMQ_PASS"])
 
         db_conn = MySQLConnector()
         db_conn.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
@@ -54,18 +52,18 @@ class MainApp:
         self.console_reporter = ConsoleReporter(db_report_service)
 
     def exec(self):
-        thread = threading.Thread(target=self.__input_listener, args=())
-        thread.daemon = True
-        #thread.start()
-
         self.__generate_records()
-        self.__post_to_rabbit()
-        self.records = None
+        self.stop_consume_event = threading.Event()
+        self.publisher = self.__broker_setup()
 
-        self.consume_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
-                                          self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
-                                          self.config["RABBITMQ_PASS"])
-        self.__get_from_rabbit()
+        thread_publish = threading.Thread(target=self.__post_to_rabbit, args=(), name="Publisher")
+        thread_publish.start()
+
+        thread_consume = threading.Thread(target=self.__get_from_rabbit, args=(), name="Consumer")
+        thread_consume.start()
+
+        self.stop_consume_event.wait()
+        self.publisher.publish("Main", "New", "timeout")
 
     def __input_listener(self):
         while True:
@@ -77,6 +75,7 @@ class MainApp:
         self.console_reporter.report()
 
     def free(self):
+        self.records = None
         self.file_service = None
         self.broker_conn.close_connection()
         self.consume_conn.close_connection()
@@ -89,6 +88,10 @@ class MainApp:
             self.records.extend(batch)
 
     def __broker_setup(self):
+        self.broker_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
+                                         self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
+                                         self.config["RABBITMQ_PASS"])
+
         broker_service = RabbitMQService(self.broker_conn, self.config)
         broker_service.create_exchange("Main", "topic")
         broker_service.create_queue("New")
@@ -105,15 +108,13 @@ class MainApp:
         return broker_service
 
     def __post_to_rabbit(self):
-        service = self.__broker_setup()
-
         for item in self.records:
             start_time = datetime.datetime.now()
 
             proto = FormatConverter.convert_rec_to_proto(item)
             queue = list(ConstantCollections.STATUS_DICT.keys())[
                 list(ConstantCollections.STATUS_DICT.values()).index(proto.status)]
-            service.publish("Main", queue, proto.SerializeToString())
+            self.publisher.publish("Main", queue, proto.SerializeToString())
 
             finish_time = datetime.datetime.now()
             zone = proto.zone
@@ -125,10 +126,13 @@ class MainApp:
                 ReportData.messaged_blue.append((finish_time - start_time).total_seconds() * 1000)
 
     def __get_from_rabbit(self):
+        self.consume_conn.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
+                                          self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
+                                          self.config["RABBITMQ_PASS"])
         db_conn = MySQLConnector()
         db_conn.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
                                 self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
         db_service = MySQLService(db_conn, self.config)
 
-        consumer = RabbitMQMessageConsumer(self.consume_conn, self.config, db_service)
+        consumer = RabbitMQMessageConsumer(self.consume_conn, self.config, db_service, self.stop_consume_event)
         consumer.consume()
