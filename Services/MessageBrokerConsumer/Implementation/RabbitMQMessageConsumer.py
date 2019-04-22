@@ -24,10 +24,6 @@ class RabbitMQMessageConsumer(MessageConsumer):
         try:
             obj.ParseFromString(body)
             Logging.info("Message received: {}".format(obj))
-            if obj == b'timeout':
-                self.channel.basic_cancel(consumer_tag="hello-consumer")
-                self.channel.stop_consuming()
-                return
             ReportData.received_from_rabbit += 1
         except DecodeError as err:
             Logging.error("Couldn't parse proto message. Error: {}".format(err.__str__()))
@@ -41,8 +37,26 @@ class RabbitMQMessageConsumer(MessageConsumer):
             rec = FormatConverter.convert_proto_to_rec(obj)
             self.current_queries_batch.append(FormatConverter.convert_rec_to_sql_query(rec))
 
-        channel.basic_ack(delivery_tag=method.delivery_tag)
-        self.last_call_time = datetime.datetime.now()
+        try:
+            channel.basic_ack(delivery_tag=method.delivery_tag)
+            self.last_call_time = datetime.datetime.now()
+        except Exception as err:
+            print(err.args.__str__())
+            Logging.error("SCREW YOU!")
+            flag = False
+            while not flag:
+                try:
+                    time.sleep(self.config["RMQ_RECONNECT_DELAY"])
+                    self.connector.open_connection(self.config["RABBITMQ_HOST"], self.config["RABBITMQ_PORT"],
+                                                   self.config["RABBITMQ_VHOST"], self.config["RABBITMQ_USER"],
+                                                   self.config["RABBITMQ_PASS"])
+                    channel.basic_ack(delivery_tag=method.delivery_tag)
+                    self.last_call_time = datetime.datetime.now()
+                    flag = True
+                except Exception as err:
+                    print(err.args.__str__())
+                    Logging.error("Couldn't consume a message! Is RabbitMQ Server running? "
+                                  "Reconnecting again after {} secs.".format(self.config["RMQ_RECONNECT_DELAY"]))
 
     def consume(self):
         try:

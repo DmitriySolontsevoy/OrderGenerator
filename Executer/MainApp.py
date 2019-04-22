@@ -57,13 +57,12 @@ class MainApp:
         self.publisher = self.__broker_setup()
 
         thread_publish = threading.Thread(target=self.__post_to_rabbit, args=(), name="Publisher")
+        thread_publish.daemon = True
         thread_publish.start()
 
         thread_consume = threading.Thread(target=self.__get_from_rabbit, args=(), name="Consumer")
+        thread_consume.daemon = True
         thread_consume.start()
-
-        self.stop_consume_event.wait()
-        self.publisher.publish("Main", "New", "timeout")
 
     def __input_listener(self):
         while True:
@@ -72,13 +71,12 @@ class MainApp:
                 self.report()
 
     def report(self):
+        self.stop_consume_event.wait()
         self.console_reporter.report()
 
     def free(self):
-        self.records = None
         self.file_service = None
-        self.broker_conn.close_connection()
-        self.consume_conn.close_connection()
+        exit(0)
 
     def __generate_records(self):
         creator = RecordsBatchCreator(self.config)

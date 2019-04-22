@@ -8,11 +8,11 @@ class RabbitMQService(ExchangeQueueBrokerService):
         self.connector = conn
         self.config = config
 
-    def create_exchange(self, name, type="fanout"):
+    def create_exchange(self, name, type="topic"):
         try:
             self.connector.channel.exchange_declare(exchange=name, exchange_type=type, durable=True)
-        except AttributeError:
-            Logging.error("Couldn't work with connection! Is RabbitMQ Server running? Reconnecting after {} secs."
+        except Exception:
+            Logging.error("Couldn't create exchange! Is RabbitMQ Server running? Reconnecting after {} secs."
                           .format(self.config["RMQ_RECONNECT_DELAY"]))
             flag = False
             while not flag:
@@ -23,17 +23,15 @@ class RabbitMQService(ExchangeQueueBrokerService):
                                                    self.config["RABBITMQ_PASS"])
                     self.connector.channel.exchange_declare(exchange=name, exchange_type=type, durable=True)
                     flag = True
-                except AttributeError:
-                    Logging.error("Couldn't work with connection! Is RabbitMQ Server running? "
+                except Exception:
+                    Logging.error("Couldn't create exchange! Is RabbitMQ Server running? "
                                   "Reconnecting again after {} secs.".format(self.config["RMQ_RECONNECT_DELAY"]))
-        except Exception as err:
-            Logging.error("Couldn't create exchange. Error: {}")
 
     def create_queue(self, name):
         try:
             self.connector.channel.queue_declare(queue=name, durable=True)
-        except AttributeError:
-            Logging.error("Couldn't work with connection! Is RabbitMQ Server running? Reconnecting after {} secs."
+        except Exception:
+            Logging.error("Couldn't create queue! Is RabbitMQ Server running? Reconnecting after {} secs."
                           .format(self.config["RMQ_RECONNECT_DELAY"]))
             flag = False
             while not flag:
@@ -44,17 +42,15 @@ class RabbitMQService(ExchangeQueueBrokerService):
                                                    self.config["RABBITMQ_PASS"])
                     self.connector.channel.queue_declare(queue=name, durable=True)
                     flag = True
-                except AttributeError:
-                    Logging.error("Couldn't work with connection! Is RabbitMQ Server running? "
+                except Exception:
+                    Logging.error("Couldn't create queue! Is RabbitMQ Server running? "
                                   "Reconnecting again after {} secs.".format(self.config["RMQ_RECONNECT_DELAY"]))
-        except Exception:
-            Logging.error("Couldn't create queue")
 
     def bind(self, exchange, queue, routing_key):
         try:
             self.connector.channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
-        except AttributeError:
-            Logging.error("Couldn't work with connection! Is RabbitMQ Server running? Reconnecting after {} secs."
+        except Exception:
+            Logging.error("Couldn't bind exchange to queue! Is RabbitMQ Server running? Reconnecting after {} secs."
                           .format(self.config["RMQ_RECONNECT_DELAY"]))
             flag = False
             while not flag:
@@ -65,17 +61,15 @@ class RabbitMQService(ExchangeQueueBrokerService):
                                                    self.config["RABBITMQ_PASS"])
                     self.connector.channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
                     flag = True
-                except AttributeError:
-                    Logging.error("Couldn't work with connection! Is RabbitMQ Server running? "
+                except Exception:
+                    Logging.error("Couldn't bind exchange to queue! Is RabbitMQ Server running? "
                                   "Reconnecting again after {} secs.".format(self.config["RMQ_RECONNECT_DELAY"]))
-        except Exception:
-            Logging.error("Couldn't bind exchange to queue")
 
     def publish(self, exchange, routing_key, message):
         try:
             self.connector.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
-        except AttributeError:
-            Logging.error("Couldn't work with connection! Is RabbitMQ Server running? Reconnecting after {} secs."
+        except Exception:
+            Logging.error("Couldn't publish a given message! Is RabbitMQ Server running? Reconnecting after {} secs."
                           .format(self.config["RMQ_RECONNECT_DELAY"]))
             flag = False
             while not flag:
@@ -86,8 +80,7 @@ class RabbitMQService(ExchangeQueueBrokerService):
                                                    self.config["RABBITMQ_PASS"])
                     self.connector.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
                     flag = True
-                except AttributeError:
-                    Logging.error("Couldn't work with connection! Is RabbitMQ Server running? "
+                except Exception as err:
+                    print(err.args.__str__())
+                    Logging.error("Couldn't publish a given message! Is RabbitMQ Server running? "
                                   "Reconnecting again after {} secs.".format(self.config["RMQ_RECONNECT_DELAY"]))
-        except Exception:
-            Logging.error("Couldn't publish a given message!")

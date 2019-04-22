@@ -10,19 +10,16 @@ class MySQLService(SQLDatabaseService):
         self.connector = conn
         self.config = config
 
-    def __commit(self):
-        try:
-            self.connector.connection.commit()
-        except mysql.connector.Error as err:
-            Logging.error("Error while committing changes")
-
-    def __try_to_create_cursor(self):
-        cursor = None
+    def select(self, query):
         try:
             cursor = self.connector.connection.cursor()
-        except (AttributeError, mysql.connector.errors.OperationalError):
-            Logging.error("Couldn't work with connection! Is MySQL Server running? Reconnecting after {} secs."
-                          .format(self.config["SQL_RECONNECT_DELAY"]))
+            cursor.execute(query)
+            result = cursor.fetchall()
+            cursor.close()
+        except mysql.connector.Error:
+            Logging.error("Error while executing query")
+        except Exception as err:
+            Logging.error("Error")
             flag = False
             while not flag:
                 try:
@@ -31,42 +28,66 @@ class MySQLService(SQLDatabaseService):
                     self.connector.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
                                                    self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
                     cursor = self.connector.connection.cursor()
+                    cursor.execute(query)
+                    result = cursor.fetchall()
+                    cursor.close()
                     flag = True
-                except (AttributeError, mysql.connector.errors.OperationalError):
+                except Exception:
                     Logging.error("Couldn't work with connection! Is MySQL Server running? "
                                   "Reconnecting again after {} secs.".format(self.config["SQL_RECONNECT_DELAY"]))
-        return cursor
 
-    def select(self, query):
-        cursor = self.__try_to_create_cursor()
-        try:
-            cursor.execute(query)
-        except mysql.connector.Error as err:
-            Logging.error("Error while executing query")
-
-        try:
-            result = cursor.fetchall()
-        except mysql.connector.Error as err:
-            Logging.error("Error while fetching result")
-            result = None
-        cursor.close()
         return result
 
     def execute(self, query):
-        cursor = self.__try_to_create_cursor()
         try:
+            cursor = self.connector.connection.cursor()
             cursor.execute(query)
-        except mysql.connector.Error as err:
-            Logging.error("Error while executing query. Error: {}".format(err.msg))
-        cursor.close()
-        self.__commit()
+            self.connector.connection.commit()
+            cursor.close()
+        except mysql.connector.Error:
+            Logging.error("Error while executing query")
+        except Exception as err:
+            Logging.error("Error: {}".format(err.args.__str__()))
+            flag = False
+            while not flag:
+                try:
+                    time.sleep(self.config["SQL_RECONNECT_DELAY"])
+                    self.connector = MySQLConnector()
+                    self.connector.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
+                                                   self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
+                    cursor = self.connector.connection.cursor()
+                    cursor.execute(query)
+                    self.connector.connection.commit()
+                    cursor.close()
+                    flag = True
+                except Exception:
+                    Logging.error("Couldn't work with connection! Is MySQL Server running? "
+                                  "Reconnecting again after {} secs.".format(self.config["SQL_RECONNECT_DELAY"]))
 
     def execute_many(self, queries):
-        cursor = self.__try_to_create_cursor()
         try:
+            cursor = self.connector.connection.cursor()
             for item in queries:
                 cursor.execute(item)
-        except mysql.connector.Error as err:
-            Logging.error("Error while executing queries")
-        cursor.close()
-        self.__commit()
+            self.connector.connection.commit()
+            cursor.close()
+        except mysql.connector.Error:
+            Logging.error("Error while executing query")
+        except Exception as err:
+            Logging.error("Error")
+            flag = False
+            while not flag:
+                try:
+                    time.sleep(self.config["SQL_RECONNECT_DELAY"])
+                    self.connector = MySQLConnector()
+                    self.connector.open_connection(self.config["MYSQL_HOST"], self.config["MYSQL_DB_SCHEMA"],
+                                                   self.config["MYSQL_USER"], self.config["MYSQL_PASS"])
+                    cursor = self.connector.connection.cursor()
+                    for item in queries:
+                        cursor.execute(item)
+                    self.connector.connection.commit()
+                    cursor.close()
+                    flag = True
+                except Exception:
+                    Logging.error("Couldn't work with connection! Is MySQL Server running? "
+                                  "Reconnecting again after {} secs.".format(self.config["SQL_RECONNECT_DELAY"]))
