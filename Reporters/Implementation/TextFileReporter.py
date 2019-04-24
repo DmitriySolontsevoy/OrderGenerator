@@ -28,11 +28,12 @@ class TextFileReporter(Reporter):
             SELECT count(*) FROM (SELECT * FROM mytable GROUP BY id HAVING count(*) = 2 AND status = 2) AS T UNION
             SELECT count(*) FROM (SELECT count(*) FROM mytable GROUP BY id HAVING count(*) = 3) AS T UNION
             SELECT count(*) FROM (SELECT * FROM mytable GROUP BY id HAVING count(*) = 2 AND status = 1) AS T;""")
-        self.__report_single_metric(int(result[0][0]), "Amount of records in the database")
-        self.__report_single_metric(result[1][0], "Amount of orders in the database")
-        self.__report_single_metric(result[2][0], "Orders in red zone")
-        self.__report_single_metric(result[3][0], "Orders in green zone")
-        self.__report_single_metric(result[4][0], "Orders in blue zone")
+        if result:
+            self.__report_single_metric(int(result[0][0]), "Amount of records in the database")
+            self.__report_single_metric(result[1][0], "Amount of orders in the database")
+            self.__report_single_metric(result[2][0], "Orders in red zone")
+            self.__report_single_metric(result[3][0], "Orders in green zone")
+            self.__report_single_metric(result[4][0], "Orders in blue zone")
 
     def __report_list(self, list, flavor_text):
         if len(list) > 0:

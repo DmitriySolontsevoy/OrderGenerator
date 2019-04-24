@@ -57,11 +57,11 @@ class MainApp:
         self.publisher = self.__broker_setup()
 
         thread_publish = threading.Thread(target=self.__post_to_rabbit, args=(), name="Publisher")
-        thread_publish.daemon = True
+        #thread_publish.daemon = True
         thread_publish.start()
 
         thread_consume = threading.Thread(target=self.__get_from_rabbit, args=(), name="Consumer")
-        thread_consume.daemon = True
+        #thread_consume.daemon = True
         thread_consume.start()
 
     def __input_listener(self):

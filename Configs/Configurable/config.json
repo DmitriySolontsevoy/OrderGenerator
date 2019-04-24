@@ -47,7 +47,7 @@
     "GREEN": 0.6,
 
 
-    "BATCH_SIZE": 70,
+    "BATCH_SIZE": 500,
     "BATCHES_AMOUNT": 20,
     "SQL_BATCH_SIZE": 100,
 

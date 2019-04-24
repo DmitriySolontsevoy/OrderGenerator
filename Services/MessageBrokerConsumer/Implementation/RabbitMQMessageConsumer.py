@@ -42,7 +42,9 @@ class RabbitMQMessageConsumer(MessageConsumer):
             self.last_call_time = datetime.datetime.now()
         except Exception as err:
             print(err.args.__str__())
-            Logging.error("SCREW YOU!")
+            Logging.error("Couldn't consume a message: {}! Is RabbitMQ Server running? "
+                          "Reconnecting after {} secs.".format(err.args.__str__(),
+                                                               self.config["RMQ_RECONNECT_DELAY"]))
             flag = False
             while not flag:
                 try:
