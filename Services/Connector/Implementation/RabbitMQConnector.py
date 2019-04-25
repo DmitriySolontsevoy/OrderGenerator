@@ -27,4 +27,7 @@ class RabbitMQConnector(Connector):
             Logging.warn("Couldn't close RMQ connection!")
 
     def is_alive(self, **kwargs):
-        return self.connection.is_open
+        try:
+            return self.connection.is_open
+        except:
+            return False
